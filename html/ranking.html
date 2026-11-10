@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影排行榜 - 南北绿豆</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #fff5f8;
+            color: #5b5b5b;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #ff6fa3;
+            transition: color 0.3s ease;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background: linear-gradient(90deg, rgba(255,255,255,0.7), rgba(255, 240, 246, 0.7));
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #f3d3df;
+            box-shadow: 0 6px 20px rgba(123, 74, 184, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ff6fa3;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: #7b4ab8;
+            margin-left: 5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 24px;
+        }
+        
+        .nav-links a {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 14px;
+            position: relative;
+            background: rgba(255,255,255,0.6);
+            border-radius: 999px;
+        }
+        
+        .nav-links a:hover {
+            color: #ff3e82;
+            background: #ffffff;
+        }
+        
+        .nav-links a.active {
+            color: #ffffff;
+            background: #ff6fa3;
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            display: none;
+        }
+        
+        /* 页面标题区域 - 移到导航栏下方，统一样式 */
+        .page-header {
+            background: url('../background.jpg') no-repeat center center/cover;
+            background-size: cover;
+            background-position: center center;
+            padding: 60px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(123, 74, 184, 0.05);
+        }
+        
+        .page-title {
+            font-size: 42px;
+            margin-bottom: 15px;
+            color: #7b4ab8;
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #6c6c6c;
+        }
+        
+        /* 排行榜筛选器 */
+        .ranking-filters {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 2px solid #ffb3c7;
+        }
+        
+        .filter-tabs li {
+            margin-right: 30px;
+        }
+        
+        .filter-tabs a {
+            display: block;
+            padding: 15px 0;
+            font-weight: 700;
+            position: relative;
+            color: #5b5b5b;
+        }
+        
+        .filter-tabs a.active {
+            color: #ff6fa3;
+        }
+        
+        .filter-tabs a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #ff6fa3;
+        }
+        
+        /* 排行榜区域 */
+        .section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ffb3c7;
+            display: inline-block;
+            color: #7b4ab8;
+        }
+        
+        .ranking-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .ranking-item {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 18px rgba(123, 74, 184, 0.08);
+        }
+        
+        .ranking-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 32px rgba(255, 111, 163, 0.2);
+        }
+        
+        .rank-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ff6fa3;
+            width: 60px;
+            text-align: center;
+            margin-right: 20px;
+        }
+        
+        .rank-number.top-three {
+            color: #ffd700;
+        }
+        
+        .movie-poster {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 20px;
+            box-shadow: 0 6px 18px rgba(123, 74, 184, 0.08);
+        }
+        
+        .movie-details {
+            flex: 1;
+        }
+        
+        .movie-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #5b5b5b;
+        }
+        
+        .movie-meta {
+            display: flex;
+            font-size: 14px;
+            color: #8a8a8a;
+            margin-bottom: 10px;
+        }
+        
+        .movie-meta span {
+            margin-right: 15px;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stars {
+            color: #ffcf33;
+            margin-right: 10px;
+        }
+        
+        .rating-value {
+            font-weight: 600;
+            color: #7b4ab8;
+        }
+        
+        .ranking-tags {
+            display: flex;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .tag {
+            background-color: #ffeaf1;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #7b4ab8;
+            border: 1px solid #ffd6e3;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #ffffff;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #7b4ab8;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: #ff3e82;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ffd6e3;
+            color: #8a8a8a;
+            font-size: 14px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-links li {
+                margin-left: 0;
+            }
+            
+            .page-title {
+                font-size: 32px;
+            }
+            
+            .ranking-item {
+                padding: 15px;
+            }
+            
+            .rank-number {
+                font-size: 24px;
+                width: 40px;
+                margin-right: 15px;
+            }
+            
+            .movie-poster {
+                width: 60px;
+                height: 90px;
+                margin-right: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .page-subtitle {
+                font-size: 16px;
+            }
+            
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .filter-tabs li {
+                margin-right: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .ranking-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .rank-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .movie-poster {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <span>南北绿豆</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="ranking.html" class="active">排行榜</a></li>
+                <li><a href="category.html">分类</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 页面标题区域 -->
+    <section class="page-header">
+        <h1 class="page-title">电影排行榜</h1>
+        <p class="page-subtitle">探索最受欢迎、评分最高的电影，发现影迷们的最爱</p>
+    </section>
+
+    <!-- 排行榜筛选器 -->
+    <div class="ranking-filters">
+        <ul class="filter-tabs">
+            <li><a href="#" class="active">总榜TOP100</a></li>
+            <li><a href="#">本周热门</a></li>
+            <li><a href="#">高分电影</a></li>
+            <li><a href="#">最新上映</a></li>
+            <li><a href="#">经典老片</a></li>
+        </ul>
+    </div>
+
+    <!-- 总榜TOP10 -->
+    <section class="section">
+        <h2 class="section-title">总榜TOP10</h2>
+        <div class="ranking-list">
+            <!-- 第1名 -->
+            <div class="ranking-item">
+                <div class="rank-number top-three">1</div>
+                <img src="../image/xiaoshenke.webp" alt="肖申克的救赎" class="movie-poster">
+                <div class="movie-details">
+                    <h3 class="movie-title">肖申克的救赎</h3>
+                    <div class="movie-meta">
+                        <span>1994</span>
+                        <span>剧情</span>
+                        <span>美国</span>
+                    </div>
+                    <div class="rating">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-value">9.3</div>
+                    </div>
+                    <div class="ranking-tags">
+                        <span class="tag">经典</span>
+                        <span class="tag">励志</span>
+                        <span class="tag">IMDb Top1</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第2名 -->
+            <div class="ranking-item">
+                <div class="rank-number top-three">2</div>
+                <img src="../image/jiaofu.webp" alt="教父" class="movie-poster">
+                <div class="movie-details">
+                    <h3 class="movie-title">教父</h3>
+                    <div class="movie-meta">
+                        <span>1972</span>
+                        <span>犯罪</span>
+                        <span>美国</span>
+                    </div>
+                    <div class="rating">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-value">9.2</div>
+                    </div>
+                    <div class="ranking-tags">
+                        <span class="tag">黑帮</span>
+                        <span class="tag">经典</span>
+                        <span class="tag">奥斯卡</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第3名 -->
+            <div class="ranking-item">
+                <div class="rank-number top-three">3</div>
+                <img src="../image/bianfuxia.webp" alt="黑暗骑士" class="movie-poster">
+                <div class="movie-details">
+                    <h3 class="movie-title">蝙蝠侠：黑暗骑士</h3>
+                    <div class="movie-meta">
+                        <span>2008</span>
+                        <span>动作</span>
+                        <span>美国</span>
+                    </div>
+                    <div class="rating">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-value">9.0</div>
+                    </div>
+                    <div class="ranking-tags">
+                        <span class="tag">超级英雄</span>
+                        <span class="tag">犯罪</span>
+                        <span class="tag">诺兰</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第4名 -->
+            <div class="ranking-item">
+                <div class="rank-number">4</div>
+                <img src="../image/jiaofu2.webp" alt="教父2" class="movie-poster">
+                <div class="movie-details">
+                    <h3 class="movie-title">教父2</h3>
+                    <div class="movie-meta">
+                        <span>1974</span>
+                        <span>犯罪</span>
+                        <span>美国</span>
+                    </div>
+                    <div class="rating">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-value">9.0</div>
+                    </div>
+                    <div class="ranking-tags">
+                        <span class="tag">黑帮</span>
+                        <span class="tag">经典</span>
+                        <span class="tag">奥斯卡</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第5名 -->
+            <div class="ranking-item">
+                <div class="rank-number">5</div>
+                <img src="../image/shier.webp" alt="十二怒汉" class="movie-poster">
+                <div class="movie-details">
+                    <h3 class="movie-title">十二怒汉</h3>
+                    <div class="movie-meta">
+                        <span>1957</span>
+                        <span>剧情</span>
+                        <span>美国</span>
+                    </div>
+                    <div class="rating">
+                        <div class="stars">★★★★★</div>
+                        <div class="rating-value">9.0</div>
+                    </div>
+                    <div class="ranking-tags">
+                        <span class="tag">法庭</span>
+                        <span class="tag">经典</span>
+                        <span class="tag">黑白</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>南北绿豆</h3>
+                <p>致力于为您提供最新、最全的电影资讯和观影指南。</p>
+            </div>
+            <div class="footer-column">
+                <h3>快速链接</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="ranking.html">排行榜</a></li>
+                    <li><a href="category.html">分类</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>联系我们</h3>
+                <ul class="footer-links">
+                    <li>邮箱: contact@movieworld.com</li>
+                    <li>电话: 400-123-4567</li>
+                    <li>地址: 哈基米市哈呀库村</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 南北绿豆 版权所有</p>
+        </div>
+    </footer>
+</body>
+</html>

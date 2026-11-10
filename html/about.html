@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 南北绿豆</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #fff5f8;
+            color: #5b5b5b;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #ff6fa3;
+            transition: color 0.3s ease;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background: linear-gradient(90deg, rgba(255,255,255,0.7), rgba(255, 240, 246, 0.7));
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #f3d3df;
+            box-shadow: 0 6px 20px rgba(123, 74, 184, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ff6fa3;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: #7b4ab8;
+            margin-left: 5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 24px;
+        }
+        
+        .nav-links a {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 14px;
+            position: relative;
+            background: rgba(255,255,255,0.6);
+            border-radius: 999px;
+        }
+        
+        .nav-links a:hover {
+            color: #ff3e82;
+            background: #ffffff;
+        }
+        
+        .nav-links a.active {
+            color: #ffffff;
+            background: #ff6fa3;
+        }
+        
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            display: none;
+        }
+        
+        /* 页面标题区域 - 彻底消除空白 */
+        .page-header {
+            background: url('../background.jpg') no-repeat center center/cover;
+            background-size: cover;
+            background-position: center center;
+            padding: 0; /* 完全移除内边距 */
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(123, 74, 184, 0.05);
+            margin: 0; /* 确保没有外边距 */
+            line-height: 1; /* 重置行高 */
+        }
+        
+        .page-title {
+            font-size: 32px;
+            margin: 0; /* 移除标题的外边距 */
+            padding: 20px 0 8px 0; /* 只在标题内部添加内边距 */
+            color: #7b4ab8;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 0 20px 0; /* 只在副标题内部添加内边距 */
+            color: #6c6c6c;
+        }
+        
+        /* 主要内容区域 */
+        main {
+            flex: 1;
+            padding: 0; /* 移除主内容区域的内边距 */
+        }
+        
+        .section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ffb3c7;
+            display: inline-block;
+            color: #7b4ab8;
+        }
+        
+        .about-text {
+            font-size: 16px;
+            line-height: 1.8;
+            background-image: url('../aaa.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(255, 111, 163, 0.15);
+            color: #5b5b5b;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #ffffff;
+            padding: 40px 20px;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #7b4ab8;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: #ff3e82;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ffd6e3;
+            color: #8a8a8a;
+            font-size: 14px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .logo {
+                margin-bottom: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-links li {
+                margin-left: 0;
+            }
+            
+            .page-title {
+                font-size: 32px;
+                padding: 15px 0 6px 0;
+            }
+            
+            .page-subtitle {
+                padding: 0 0 15px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+                padding: 12px 0 4px 0;
+            }
+            
+            .page-subtitle {
+                font-size: 16px;
+                padding: 0 0 12px 0;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <span>南北绿豆</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="ranking.html">排行榜</a></li>
+                <li><a href="category.html">分类</a></li>
+                <li><a href="about.html" class="active">关于我们</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main>
+        <!-- 页面标题区域 -->
+        <section class="page-header">
+            <h1 class="page-title">关于南北绿豆</h1>
+            <p class="page-subtitle">我们是一群热爱电影的追梦人，致力于为您打造最专业的电影资讯平台</p>
+        </section>
+
+        <!-- 关于我们内容 -->
+        <section class="section">
+            <h2 class="section-title">我们的故事</h2>
+            <div class="about-text">
+                <p>南北绿豆成立于2018年，由一群热爱电影的年轻人共同创立。我们相信电影不仅是娱乐，更是一种艺术形式，能够触动人心、启迪思想、连接不同文化。</p>
+                <p>在信息爆炸的时代，我们深感优质电影内容的珍贵，以及寻找好电影的困难。因此，我们决定创建一个平台，帮助电影爱好者发现更多优秀的作品，分享观影体验，建立真诚的交流社区。</p>
+                <p>经过多年的发展，南北绿豆已经成长为拥有数百万用户的专业电影平台，我们收录了来自全球各地的数万部电影，提供了详细的影片信息、专业的影评和真实的用户评分。</p>
+                <p>未来，我们将继续秉持初心，不断优化产品体验，丰富内容生态，为所有电影爱好者提供更好的服务。</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>南北绿豆</h3>
+                <p>致力于为您提供最新、最全的电影资讯和观影指南。</p>
+            </div>
+            <div class="footer-column">
+                <h3>快速链接</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="ranking.html">排行榜</a></li>
+                    <li><a href="category.html">分类</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>联系我们</h3>
+                <ul class="footer-links">
+                    <li>邮箱: contact@movieworld.com</li>
+                    <li>电话: 400-123-4567</li>
+                    <li>地址: 哈基米市哈呀库村</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 南北绿豆 版权所有</p>
+        </div>
+    </footer>
+</body>
+</html>
